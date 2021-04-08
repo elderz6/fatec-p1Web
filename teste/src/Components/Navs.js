@@ -1,11 +1,14 @@
 import { Navbar } from "react-bootstrap";
 import SecretNav from "./SecretNav";
-const Navs = ({isAuthenticated}) => {
+import React, { useContext } from 'react'
+import { AuthApi } from "../AuthApi";
+
+const Navs = () => {
+    const { auth, role } = useContext(AuthApi); 
     return(
     <Navbar bg="light" expand="lg">
         <Navbar.Brand href="/">Consulta de Chamados</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        {isAuthenticated ? <SecretNav /> : '' }
+        {auth ? <SecretNav role={role}/> : '' }
     </Navbar>
 );}
 

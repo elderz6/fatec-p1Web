@@ -5,7 +5,7 @@ const Dashboard = () => {
     const [todos, setTodos] = useState([
         {
             text: 'Authentication',
-            isCompleted: false
+            isCompleted: true
         },
         {
             text: 'Authorization',
@@ -13,7 +13,7 @@ const Dashboard = () => {
         },
         {
             text: 'Backend',
-            isCompleted: false
+            isCompleted: true
         },
         {
             text: 'Open a modal to view ticket details',
@@ -36,7 +36,7 @@ const Dashboard = () => {
         setTodos(newTodos)
     }
     return (
-        <div className='cardContainer row'>
+        <div className='cardContainer d-flex flex-wrap'>
             {todos.map((todo, index) => {
                 return <Todo
                     key={index}
@@ -46,9 +46,6 @@ const Dashboard = () => {
                     removeTodo={removeTodo}
                 />
             })}
-            <div className='formContainer col-4'>
-                <TodoForm addTodo={addTodo} />
-            </div>
         </div>
     )
 }
