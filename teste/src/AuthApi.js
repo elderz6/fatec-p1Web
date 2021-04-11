@@ -17,11 +17,13 @@ export const getSessionCookie = () => {
       return  JSON.parse(sessionCookie);
     }
 };
-const cookie = getSessionCookie();
+let cookie = getSessionCookie();
 
 const initialState = {
     auth: cookie.auth,
-    role: cookie.role
+    role: cookie.role,
+    nome: cookie.nome,
+    email: cookie.email
 }
 
 export const AuthApi = createContext(initialState);
@@ -30,18 +32,28 @@ export const GlobalProvider = ({children}) => {
     const [state, dispatch] = useReducer(AppReducer, initialState);
     //Actions
     const doAuth = (login) => {
-        setSessionCookie(login)
         dispatch({
             type:'AUTHENTICATE',
             payload: login
         });   
+        setSessionCookie(login);
+    }
+    const doLogout = () => {
+        dispatch({
+            type:'LOGOUT',
+            payload:''
+        });
+        setSessionCookie({});
     }
 
     return(
     <AuthApi.Provider value={{
         auth:state.auth,
         role:state.role,
-        doAuth
+        nome: state.nome,
+        email: state.email,
+        doAuth,
+        doLogout
     }}>
         {children}
     </AuthApi.Provider>

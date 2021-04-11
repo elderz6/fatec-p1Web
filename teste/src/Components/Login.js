@@ -21,11 +21,14 @@ const Login = () => {
         await axios.post('/login', {email:valueEmail, password:valuePw, role:role})
             .then(res => {
                 if(res.data.auth === 'ok') {
-                    doAuth({auth:true, role:res.data.role});
+                    doAuth({
+                        auth:true, 
+                        role:res.data.role, 
+                        email:res.data.email, 
+                        nome:res.data.nome
+                    });
                 }else setUserError(true);
             });
-        setValueEmail('');
-        setValuePw('');
     }
     return (
         <div className='loginForm row'>

@@ -3,13 +3,13 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import  {pwValidation, duplicateValidation, successForm} from './utils.js';
 
-const Cadastro = () => {
+const CadastroAnalista = () => {
     const [valueNome, setValueNome] = useState('');
     const [valueEmail, setValueEmail] = useState('');
     const [valuePw, setValuePw] = useState('');
     const [pwValid, setpwValid] = useState('');
     const [valueTelefone, setValueTelefone] = useState('');
-    const [roleValue] = useState('Cliente');
+    const [roleValue] = useState('Analista');
     const [duplicateUser, setDuplicateUser] = useState(false);
     const [cadastroSucesso, setCadastroSucesso] = useState(false);
 
@@ -37,7 +37,7 @@ const Cadastro = () => {
         <div className='loginForm '>
             {successForm(cadastroSucesso)}
             <div className='p-3'></div>
-            <h3>Cadastro de Usuario</h3>
+            <h3>Cadastro de Analista</h3>
             <div className='p-6'>
                 <Form onSubmit={handleCadastro}>
                     <Form.Group>
@@ -83,14 +83,13 @@ const Cadastro = () => {
                             value={valueTelefone}
                             onChange={e => setValueTelefone(e.target.value)}
                             maxLength="12"
-                            pattern="[0-9]{12}"
                             required placeholder='11912345678'
                         />
                     </Form.Group>
                     <Form.Group>
                         <Form.Label> Tipo de Usuario </Form.Label>
                         <Form.Control as='select' disabled>
-                            <option>Cliente</option>
+                            <option>Analista</option>
                         </Form.Control>
                     </Form.Group>
                     <Button variant="primary" type='submit'>
@@ -103,4 +102,4 @@ const Cadastro = () => {
     )
 }
 
-export default Cadastro;
+export default CadastroAnalista;

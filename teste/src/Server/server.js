@@ -41,7 +41,6 @@ app.use(session({
 }));
 app.use(bodyParser.json());
 
-
 app.post('/user', async (req, res) => {
     const user = req.body
     const hashedPass = await bcrypt.hash(user.password, 12);
@@ -54,26 +53,55 @@ app.post('/user', async (req, res) => {
         console.log(e);
         res.status(200).json({erro:e.errno});
     }
+    if(conn) await conn.end();
 });
 
+//TODO: trigger banco de dados pra registro de acessos
 app.post('/login', async (req, res) => {
     const user = req.body;
+    let conn = await pool.getConnection();
     try{
-        let conn = await pool.getConnection();
-        const rows = await conn.query('SELECT email, role, password FROM usuarios WHERE email=? AND role=?', [user.email, user.role]);
+        const rows = await conn.query('SELECT email, role, password, nome FROM usuarios WHERE email=? AND role=?', [user.email, user.role]);
         const isMatch = await bcrypt.compare(user.password, rows[0].password);
         if(isMatch){
-            req.session.isAuth = true;
-            req.session.role = rows[0].role;
-            res.send({auth:'ok', role:rows[0].role});
+            // req.session.isAuth = true;
+            // req.session.role = rows[0].role;
+            res.send({
+                auth:'ok', 
+                role:rows[0].role, 
+                email:rows[0].email, 
+                nome:rows[0].nome
+            });
         }else{
             res.send('Usuario não encontrado');    
         }
     }catch(e){
         res.send('Usuario não encontrado');
     }
+    if(conn) await conn.end();
 });
 
+app.get('/chamados', async(req, res) => {
+    let conn = await pool.getConnection();
+    try{
+        let qry = await conn.query('SELECT * FROM chamados');
+        console.log(qry);
+    }catch(e){
+        console.log(e);
+    }
+    if(conn) await conn.end();
+});
+
+app.post('/chamados', async(req, res) => {
+    let conn = await pool.getConnection();
+    try{
+        let qry = await conn.query('INSERT INTO chamados () values(?,?,?,?)', []);
+        console.log(qry);
+    }catch(e){
+        console.log(e);
+    }
+    if(conn) await conn.end();
+});
 
 
 app.listen(port, () => 

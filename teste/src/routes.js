@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import {AuthApi} from './AuthApi';
 import Cadastro from './Components/Cadastro';
+import CadastroAnalista from './Components/CadastroAnalista';
 import Dashboard from './Components/Dashboard';
 import Login from './Components/Login';
 import ChamadoForm from './Components/ChamadoForm';
@@ -30,7 +31,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
     const { auth, role } = React.useContext(AuthApi);
     return(
         <Route {...rest} render={props => (
-            (auth && role === 'Gerente')
+            (auth && role === 'Gestor')
                 ? (<Component {...props} />)
                 : (<Redirect to={{ pathname: '/', state: { from: props.location } }} />)
         )} /> );
@@ -44,7 +45,7 @@ const Routes = () => (
             <RouteRegistration exact path='/cadastro' component={() => <Cadastro />} />
             <PrivateRoute exact path='/dashboard' component={() => <Dashboard />} />
             <PrivateRoute exact path='/novoChamado' component={() => <ChamadoForm />} />
-            <ProtectedRoute exact path='/cadastrarAnalista' component={() => <Cadastro />} />
+            <ProtectedRoute exact path='/cadastrarAnalista' component={() => <CadastroAnalista />} />
             <Redirect from="*" to="/"/>
         </Switch>
     </BrowserRouter>

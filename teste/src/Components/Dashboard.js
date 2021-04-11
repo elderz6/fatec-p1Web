@@ -5,7 +5,7 @@ const Dashboard = () => {
     const [todos, setTodos] = useState([
         {
             text: 'Authentication',
-            isCompleted: true
+            isCompleted: false
         },
         {
             text: 'Authorization',
