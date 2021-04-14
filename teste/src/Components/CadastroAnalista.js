@@ -15,11 +15,12 @@ const CadastroAnalista = () => {
 
     const handleCadastro = async e => {
         e.preventDefault();
-        // if(pwValidation !== '') return;
+        if(pwValidation(pwValid, valuePw) !== '') return;
         if (!valueEmail || !valuePw) return;
+        const filteredMail = valueEmail.replace(/\s/g, '');
         const newUser = {
             nome:valueNome,
-            email:valueEmail,
+            email:filteredMail,
             password:valuePw,
             telefone:valueTelefone,
             role: roleValue
@@ -83,6 +84,7 @@ const CadastroAnalista = () => {
                             value={valueTelefone}
                             onChange={e => setValueTelefone(e.target.value)}
                             maxLength="12"
+                            pattern="[0-9]{12}"
                             required placeholder='11912345678'
                         />
                     </Form.Group>

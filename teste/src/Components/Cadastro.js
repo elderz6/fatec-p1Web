@@ -15,11 +15,12 @@ const Cadastro = () => {
 
     const handleCadastro = async e => {
         e.preventDefault();
-        // if(pwValidation !== '') return;
+        if(pwValidation(pwValid, valuePw) !== '') return;
         if (!valueEmail || !valuePw) return;
+        const filteredMail = valueEmail.replace(/\s/g, '');
         const newUser = {
             nome:valueNome,
-            email:valueEmail,
+            email:filteredMail,
             password:valuePw,
             telefone:valueTelefone,
             role: roleValue
@@ -44,7 +45,7 @@ const Cadastro = () => {
                         <Form.Label>Nome</Form.Label>
                         <Form.Control
                             onChange={e => setValueNome(e.target.value)}
-                            pattern="[A-z, ' ']{6,50}"
+                            pattern="[A-z, ' ']{3,50}"
                             value={valueNome}
                             required
                         />

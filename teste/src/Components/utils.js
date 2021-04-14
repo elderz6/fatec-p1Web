@@ -8,15 +8,15 @@ export function pwValidation(pwValid, valuePw){
     if(valuePw.search(/[a-z+]/) < 0) alerts.push("Caracter minusculo");
     if(valuePw.search(/[0-9+]/) < 0) alerts.push("Numero");
     if(valuePw.search(/[!@#$%¨&*()?<>]/) <0) alerts.push("Caracter especial");
-    if (pwValid !== valuePw) alerts.push("As senhas devem ser iguais");
+    if(pwValid !== valuePw) alerts.push("As senhas devem ser iguais");
     
-    let res = alerts.length > 0 ? 
+    let res = alerts.length > 0 ?
         <Alert> As Senhas devem Conter:
             {alerts.map( (alert, index) => {
             return <Alert key={index} variant="warning">{alert}</Alert>})}
         </Alert> : '';
         return(res);
-} 
+}
 
 export function duplicateValidation(duplicateUser){
     if(duplicateUser)
@@ -33,4 +33,8 @@ export function successForm(cadastroSucesso) {
                 <Redirect to='/'/>
             </>
     )}
+}
+
+export function emailValidation() {
+    
 }
