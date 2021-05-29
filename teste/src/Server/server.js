@@ -30,6 +30,12 @@ const pool = mariadb.createPool({
     password: 'beirute',
     database:'login'
 });
+const chamadosPool = mariadb.createPool({
+    host: '127.0.0.1', 
+    user:'root', 
+    password: 'beirute',
+    database:'chamados'
+})
 
 const sessionStore = new MySQLStore(options);
 
@@ -72,37 +78,40 @@ app.post('/login', async (req, res) => {
                 email:rows[0].email, 
                 nome:rows[0].nome
             });
-        }else{
-            res.send('Usuario não encontrado');    
-        }
-    }catch(e){
-        res.send('Usuario não encontrado');
-    }
+        }else res.send('Usuario não encontrado');    
+    }catch(e){ res.send('Usuario não encontrado'); }
     if(conn) await conn.end();
 });
 
 app.get('/chamados', async(req, res) => {
-    let conn = await pool.getConnection();
+    let conn = await chamadosPool.getConnection();
     try{
         let qry = await conn.query('SELECT * FROM chamados');
-        console.log(qry);
-    }catch(e){
-        console.log(e);
-    }
+        // console.log(qry);
+        res.send(qry.splice(qry['meta']));
+    }catch(e){ console.log(e) }
     if(conn) await conn.end();
 });
 
 app.post('/chamados', async(req, res) => {
-    let conn = await pool.getConnection();
+    const chamado = req.body
+    let conn = await chamadosPool.getConnection();
     try{
-        let qry = await conn.query('INSERT INTO chamados () values(?,?,?,?)', []);
-        console.log(qry);
-    }catch(e){
-        console.log(e);
-    }
+        //codigo, titulo, descritivo, prioridade, status
+        let qry = await conn.query('INSERT INTO chamados (descricao, gravidade, tipo, emailUser) values(?,?,?,?)', 
+        [chamado.desc, chamado.gravidade, chamado.tipo, chamado.email]);
+    }catch(e){ console.log(e); }
     if(conn) await conn.end();
 });
 
+app.patch('/chamados', async(req, res) => {
+    const chamado = req.body
+    let conn = await chamadosPool.getConnection();
+    try{
+        let qry = await conn.query('update chamados set isCompleted = "true" where id = ?', [chamado.id]);
+        res.send('200 ok');
+    } catch(e){console.log(e);}
+})
 
 app.listen(port, () => 
     console.log(`Server running on port: ${port}`));
