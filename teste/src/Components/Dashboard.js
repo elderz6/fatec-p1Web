@@ -1,35 +1,48 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Todo from './Todo';
 import axios from 'axios'
-import { Redirect } from 'react-router-dom';
+import { AuthApi } from "../AuthApi";
 
 const Dashboard = () => {
     const [todos, setTodos] = useState('');
+    const  api  = useContext(AuthApi);
 
     const addTodo = obj => {
         const newTodos = obj;
         setTodos(newTodos);
     }
 
-    const completeTodo = async index => {
-        const update = await axios.patch('/chamados', {id:index});
+    const updateTodo = async (id, descricao) => {
+        const update = await axios.patch('/chamados', { id: id, descricao:descricao });
         const newChamados = await getChamados();
         addTodo(newChamados);
     }
 
-    const removeTodo = index => {
-
-    }
-
     const getChamados = async () => {
-        const teste = await axios.get('/chamados');
-        const result = teste.data
+        const chamados = await axios.get('/chamados');
+        const result = chamados.data;
         return result
     }
-    useEffect( async () => {
-       let teste = await getChamados();
-       addTodo(teste);
-    }, []);
+
+    const getChamadosUser = async (email) => {
+        const chamados = await axios.post('/chamadosUser', {id:email});
+        const result = chamados.data;
+        return result
+    }
+
+    useEffect(() => {
+        async function fetchChamados() {
+            if(api.role !== 'Cliente'){
+                const chamados = await getChamados();
+                addTodo(chamados);
+            }
+            else{
+                const chamados = await getChamadosUser(api.email);
+                addTodo(chamados);
+        }}
+        fetchChamados()
+    }, [api.role, api.email]);
+
     return (
         <div className='cardContainer d-flex flex-wrap'>
             {todos ? todos.map((todo, index) => {
@@ -37,8 +50,7 @@ const Dashboard = () => {
                     key={index}
                     index={index}
                     todo={todo}
-                    completeTodo={completeTodo}
-                    removeTodo={removeTodo}
+                    updateTodo={updateTodo}
                 />
             }) : ''}
         </div>

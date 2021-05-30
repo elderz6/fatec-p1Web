@@ -7,9 +7,7 @@ const SecretNav = ({role}) => {
     const {doLogout} = useContext( AuthApi );
     const logout = async () => {
         await doLogout();
-        return(
-            <Redirect to='/login'/>
-        )
+        return( <Redirect to='/login'/> )
     }
     return(
         <Nav className="mr-auto">

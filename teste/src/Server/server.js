@@ -105,11 +105,30 @@ app.post('/chamados', async(req, res) => {
 });
 
 app.patch('/chamados', async(req, res) => {
-    const chamado = req.body
+    const chamado = req.body;
     let conn = await chamadosPool.getConnection();
+    console.log(chamado);
+    if(chamado.descricao){
+        let qry = await conn.query('update chamados set descricao = ? where id = ?', [chamado.descricao, chamado.id]);
+        console.log('update decricao');
+        res.send('200 ok');
+    }else{
     try{
+        console.log('update status');
         let qry = await conn.query('update chamados set isCompleted = "true" where id = ?', [chamado.id]);
         res.send('200 ok');
+    } catch(e){console.log(e);}
+    }
+});
+
+
+app.post('/chamadosUser', async(req, res) => {
+    const user = req.body
+    let conn = await chamadosPool.getConnection();
+    try{
+        let qry = await conn.query('SELECT * FROM chamados where emailUser = ?', [user.id]);
+        const chamados = qry.splice(qry['meta'])
+        res.send(chamados);
     } catch(e){console.log(e);}
 })
 

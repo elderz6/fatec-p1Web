@@ -43,6 +43,10 @@
   height: 100%;
 }
 
+.modal-dialog{
+  max-width: none !important;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

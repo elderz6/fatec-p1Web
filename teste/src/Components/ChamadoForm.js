@@ -2,6 +2,7 @@ import { Form, Button } from "react-bootstrap";
 import { AuthApi } from '../AuthApi';
 import React, { useContext, useState } from 'react';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 const ChamadoForm = () =>{
     const api = useContext(AuthApi);
@@ -19,7 +20,8 @@ const ChamadoForm = () =>{
             desc: valueDesc
         }
         console.log(chamado);
-        await axios.post('/chamados', chamado)
+        await axios.post('/chamados', chamado);
+        return( <Redirect to='/dashboard'/> );
     }
 
     return(
