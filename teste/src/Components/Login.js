@@ -67,7 +67,11 @@ const Login = () => {
                             Entrar
                         </Button>
                         </div>
-                        <div className='col-4'></div>
+                        <div className='col-4'>
+                        <Button variant="warning" href='/recover'>
+                            Recuperar senha
+                        </Button>
+                        </div>
                         <div className='col-4 text-right'>
                         <Button variant="primary" href='/cadastro'>
                             Cadastrar

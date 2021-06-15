@@ -13,7 +13,7 @@ const Dashboard = () => {
     }
 
     const updateTodo = async (id, descricao) => {
-        const update = await axios.patch('/chamados', { id: id, descricao:descricao });
+        const update = await axios.patch('/chamados', { id: id, descricao:descricao, analista: api.email });
         const newChamados = await getChamados();
         addTodo(newChamados);
     }

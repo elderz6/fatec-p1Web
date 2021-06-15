@@ -13,6 +13,7 @@ const SecretNav = ({role}) => {
         <Nav className="mr-auto">
             <Nav.Link href="/dashboard">Ver Chamados</Nav.Link>
             <Nav.Link href="/novoChamado">Abrir Chamado</Nav.Link>
+            <Nav.Link href="/atualizarCadastro">Atualizar cadastro</Nav.Link>
             {role === 'Gestor'? <Nav.Link href="/cadastrarAnalista"> Cadastrar Analista</Nav.Link>
             : '' }
             <Nav.Link onClick={() => logout()} className='text-left'>

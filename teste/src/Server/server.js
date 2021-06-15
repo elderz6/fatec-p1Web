@@ -5,6 +5,9 @@ const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const bcrypt = require('bcryptjs');
 
+const nodemailer = require('nodemailer');
+const sgTransport = require('nodemailer-sendgrid-transport');
+
 const port = 5000;
 const app = express();
 const router = express.Router();
@@ -14,6 +17,10 @@ const isAuth = (req, res, next) => {
     if(req.session.isAuth) next();
     else res.status(404).send('Erro');
 }
+
+var mailer = nodemailer.createTransport(sgTransport({
+    auth:{api_key:""}
+}));
 
 const options = {
     host: '127.0.0.1', 
@@ -62,7 +69,6 @@ app.post('/user', async (req, res) => {
     if(conn) await conn.end();
 });
 
-//TODO: trigger banco de dados pra registro de acessos
 app.post('/login', async (req, res) => {
     const user = req.body;
     let conn = await pool.getConnection();
@@ -81,6 +87,27 @@ app.post('/login', async (req, res) => {
         }else res.send('Usuario não encontrado');    
     }catch(e){ res.send('Usuario não encontrado'); }
     if(conn) await conn.end();
+});
+
+app.post('/recover', async(req, res) => {
+    const mail = req.body.email;
+    let conn = await pool.getConnection();
+    try{
+        let qry = await conn.query('SELECT email FROM usuarios WHERE email = "' +mail+ '"');
+        const result = qry.splice(qry['meta'])[0].email 
+        if(result == mail){
+            const newPass = await bcrypt.hash("asdf", 12);
+            qry = await conn.query('UPDATE usuarios set password = ? where email ="'+result+'"', [newPass]);
+            mailer.sendMail({
+                to:'',
+                from:'',
+                subject:'Reset de Senha',
+                html:'<h1> Sua nova senha é <b>asdf</b> <br /> por favor altere após acessar </h1>'
+            })
+            .then(console.log('mail sent'))
+            .catch(e => console.log(e));
+        }}
+    catch(e){console.log('err'+e)}
 });
 
 app.get('/chamados', async(req, res) => {
@@ -115,12 +142,11 @@ app.patch('/chamados', async(req, res) => {
     }else{
     try{
         console.log('update status');
-        let qry = await conn.query('update chamados set isCompleted = "true" where id = ?', [chamado.id]);
+        let qry = await conn.query('update chamados set isCompleted = "true", atendidoPor=?, atendidoEm=CURRENT_TIMESTAMP() where id = ?', [chamado.analista, chamado.id]);
         res.send('200 ok');
     } catch(e){console.log(e);}
     }
 });
-
 
 app.post('/chamadosUser', async(req, res) => {
     const user = req.body
@@ -130,7 +156,21 @@ app.post('/chamadosUser', async(req, res) => {
         const chamados = qry.splice(qry['meta'])
         res.send(chamados);
     } catch(e){console.log(e);}
-})
+});
+
+app.post('/updateDados', async(req, res) => {
+    const email = req.body.email
+    let conn = await pool.getConnection();
+    try{
+        if(req.body.password){
+            const newPass = await bcrypt.hash(req.body.password, 12);
+            let qry = await conn.query('UPDATE usuarios SET password = ? WHERE email="'+email+'"', [newPass]);
+        }
+        else{
+            let qry = await conn.query('UPDATE usuarios SET nome = ?, telefone = ? WHERE email="'+email+'"', [req.body.nome, req.body.telefone]);
+        }
+    }catch(e) {console.log(e)}
+});
 
 app.listen(port, () => 
     console.log(`Server running on port: ${port}`));

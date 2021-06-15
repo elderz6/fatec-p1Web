@@ -6,6 +6,8 @@ import CadastroAnalista from './Components/CadastroAnalista';
 import Dashboard from './Components/Dashboard';
 import Login from './Components/Login';
 import ChamadoForm from './Components/ChamadoForm';
+import Recover from './Components/Recover';
+import AtualizarCadastro from './Components/AtualizarCadastro';
 
 const RouteRegistration = ({ component: Component, ...rest }) => {
     const authApi = React.useContext(AuthApi);
@@ -43,8 +45,10 @@ const Routes = () => (
             <RouteRegistration exact path='/' component={() => <Login />} />
             <RouteRegistration exact path='/login' component={() => <Login />} />
             <RouteRegistration exact path='/cadastro' component={() => <Cadastro />} />
+            <RouteRegistration exact path='/recover' component={() => <Recover />} />
             <PrivateRoute exact path='/dashboard' component={() => <Dashboard />} />
             <PrivateRoute exact path='/novoChamado' component={() => <ChamadoForm />} />
+            <PrivateRoute exact path='/atualizarCadastro' component={() => <AtualizarCadastro />} />
             <ProtectedRoute exact path='/cadastrarAnalista' component={() => <CadastroAnalista />} />
             <Redirect from="*" to="/"/>
         </Switch>
